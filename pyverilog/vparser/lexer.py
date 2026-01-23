@@ -104,7 +104,7 @@ class VerilogLexer(object):
     def t_DIRECTIVE(self, t):
         self.directives.append((self.lexer.lineno, t.value))
         t.lexer.lineno += t.value.count("\n")
-        m = re.match("^`default_nettype\s+(.+)\n", t.value)
+        m = re.match(r"^`default_nettype\s+(.+)\n", t.value)
         if m:
             self.default_nettype = m.group(1)
         pass

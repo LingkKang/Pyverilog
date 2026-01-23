@@ -1357,8 +1357,9 @@ class VerilogParser(object):
 
     def p_sens_empty(self, p):
         'senslist : empty'
-        p[0] = SensList(
-            (Sens(None, 'all', lineno=p.lineno(1)),), lineno=p.lineno(1))
+        # p[0] = SensList(
+            # (Sens(None, 'all', lineno=p.lineno(1)),), lineno=p.lineno(1))
+        p[0] = None
         p.set_lineno(0, p.lineno(1))
 
     def p_sens_level(self, p):

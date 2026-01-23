@@ -648,8 +648,13 @@ class ASTCodeGenerator(ConvertVisitor):
     def visit_Always(self, node):
         filename = getfilename(node)
         template = self.get_template(filename)
+
+        sens_list = ''
+        if node.sens_list is not None:
+            sens_list = self.visit(node.sens_list)
+
         template_dict = {
-            'sens_list': self.visit(node.sens_list),
+            'sens_list': sens_list,
             'statement': self.visit(node.statement),
         }
         rslt = template.render(template_dict)
@@ -806,6 +811,9 @@ class ASTCodeGenerator(ConvertVisitor):
         return rslt
 
     def visit_EventStatement(self, node):
+        if node.senslist is None:
+            return ";\n"
+
         filename = getfilename(node)
         template = self.get_template(filename)
         template_dict = {
