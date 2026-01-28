@@ -1287,3 +1287,21 @@ class EmbeddedCode(Node):
     def children(self):
         nodelist = []
         return tuple(nodelist)
+
+
+class IndexedPartselect(Node):
+    attr_names = ('type',) # '+:' or '-:'
+
+    def __init__(self, var, base, width, type='+:', lineno=0):
+        self.lineno = lineno
+        self.var = var
+        self.base = base
+        self.width = width
+        self.type = type
+
+    def children(self):
+        nodelist = []
+        if self.var: nodelist.append(self.var)
+        if self.base: nodelist.append(self.base)
+        if self.width: nodelist.append(self.width)
+        return tuple(nodelist)

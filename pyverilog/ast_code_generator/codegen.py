@@ -1042,3 +1042,11 @@ class ASTCodeGenerator(ConvertVisitor):
 
     def visit_EmbeddedCode(self, node):
         return node.code
+
+    def visit_IndexedPartselect(self, node):
+        # We don't use a .txt template here for simplicity, 
+        # similar to visit_EmbeddedCode
+        var = self.visit(node.var)
+        base = del_space(del_paren(self.visit(node.base)))
+        width = del_space(del_paren(self.visit(node.width)))
+        return "%s[%s %s %s]" % (var, base, node.type, width)
