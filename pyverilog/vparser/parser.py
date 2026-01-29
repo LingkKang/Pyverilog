@@ -625,10 +625,10 @@ class VerilogParser(object):
         if 'wire' in sigtypes:
             decls.append(Wire(name=name, width=width,
                               signed=signed, lineno=lineno))
+            decls.append(assign)
         if 'reg' in sigtypes:
             decls.append(Reg(name=name, width=width,
-                             signed=signed, lineno=lineno))
-        decls.append(assign)
+                             signed=signed, value=assign.right, lineno=lineno))
         return decls
 
     def typecheck_declassign(self, sigtypes):

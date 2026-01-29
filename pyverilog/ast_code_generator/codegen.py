@@ -326,11 +326,15 @@ class ASTCodeGenerator(ConvertVisitor):
     def visit_Reg(self, node):
         filename = getfilename(node)
         template = self.get_template(filename)
+        value = ''
+        if node.value is not None:
+            value = self.visit(node.value)
         template_dict = {
             'name': escape(node.name),
             'width': '' if node.width is None else self.visit(node.width),
             'signed': node.signed,
             'dimensions': '' if node.dimensions is None else self.visit(node.dimensions),
+            'value': value,
         }
         rslt = template.render(template_dict)
         return rslt
