@@ -2162,8 +2162,14 @@ class VerilogParser(object):
 
     # --------------------------------------------------------------------------
     def p_task(self, p):
-        'task : TASK ID SEMICOLON task_statement ENDTASK'
-        p[0] = Task(p[2], p[4], lineno=p.lineno(1))
+        """task : TASK ID SEMICOLON task_statement ENDTASK
+                | TASK AUTOMATIC ID SEMICOLON task_statement ENDTASK"""
+        if len(p) == 6:
+            # Case: task name;
+            p[0] = Task(p[2], p[4], automatic=False, lineno=p.lineno(1))
+        else:
+            # Case: task automatic name;
+            p[0] = Task(p[3], p[5], automatic=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_task_statement(self, p):

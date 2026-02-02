@@ -940,6 +940,7 @@ class ASTCodeGenerator(ConvertVisitor):
         template_dict = {
             'name': escape(node.name),
             'statement': statement,
+            'automatic': 'automatic ' if node.automatic else '',
         }
         rslt = template.render(template_dict)
         return rslt

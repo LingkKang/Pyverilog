@@ -1,7 +1,5 @@
-
-task {{ name }};
+task {{ automatic }}{{ name }};
 {%- for s in statement %}
 {{ s }}
 {%- endfor %}
 endtask
-

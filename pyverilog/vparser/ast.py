@@ -1110,12 +1110,13 @@ class FunctionCall(Node):
 
 
 class Task(Node):
-    attr_names = ('name',)
+    attr_names = ('name', 'automatic')
 
-    def __init__(self, name, statement, lineno=0):
+    def __init__(self, name, statement, automatic=False, lineno=0):
         self.lineno = lineno
         self.name = name
         self.statement = statement
+        self.automatic = automatic
 
     def children(self):
         nodelist = []
