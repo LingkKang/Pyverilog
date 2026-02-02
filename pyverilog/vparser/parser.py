@@ -2205,6 +2205,8 @@ class VerilogParser(object):
 
     def p_task_calc(self, p):
         """task_calc : blocking_substitution
+        | nonblocking_substitution
+        | single_statement
         | if_statement
         | for_statement
         | while_statement
