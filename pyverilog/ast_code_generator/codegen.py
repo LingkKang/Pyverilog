@@ -944,17 +944,17 @@ class ASTCodeGenerator(ConvertVisitor):
         rslt = template.render(template_dict)
         return rslt
 
-    # def visit_TaskCall(self, node):
-    #    filename = getfilename(node)
-    #    template = self.get_template(filename)
-    #    args = [ self.visit(arg) for arg in node.args ]
-    #    template_dict = {
-    #        'name' : self.visit(node.name),
-    #        'args' : args,
-    #        'len_args' : len(args),
-    #        }
-    #    rslt = template.render(template_dict)
-    #    return rslt
+    def visit_TaskCall(self, node):
+        filename = getfilename(node)
+        template = self.get_template(filename)
+        args = [self.visit(arg) for arg in node.args]
+        template_dict = {
+            'name': self.visit(node.name),
+            'args': args,
+            'len_args': len(args),
+        }
+        rslt = template.render(template_dict)
+        return rslt
 
     def visit_GenerateStatement(self, node):
         filename = getfilename(node)

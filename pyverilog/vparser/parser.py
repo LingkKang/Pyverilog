@@ -1435,9 +1435,14 @@ class VerilogParser(object):
 
     # --------------------------------------------------------------------------
     def p_blocking_substitution(self, p):
-        'blocking_substitution : delays lvalue EQUALS delays rvalue SEMICOLON'
-        p[0] = BlockingSubstitution(p[2], p[5], p[1], p[4], lineno=p.lineno(2))
-        p.set_lineno(0, p.lineno(2))
+        """blocking_substitution : delay_control lvalue EQUALS delays rvalue SEMICOLON
+                                 | lvalue EQUALS delays rvalue SEMICOLON"""
+        if len(p) == 7:
+            p[0] = BlockingSubstitution(p[2], p[5], p[1], p[4], lineno=p.lineno(2))
+            p.set_lineno(0, p.lineno(2))
+        else:
+            p[0] = BlockingSubstitution(p[1], p[4], None, p[3], lineno=p.lineno(1))
+            p.set_lineno(0, p.lineno(1))
 
     def p_blocking_substitution_base(self, p):
         'blocking_substitution_base : delays lvalue EQUALS delays rvalue'
@@ -1445,10 +1450,14 @@ class VerilogParser(object):
         p.set_lineno(0, p.lineno(2))
 
     def p_nonblocking_substitution(self, p):
-        'nonblocking_substitution : delays lvalue LE delays rvalue SEMICOLON'
-        p[0] = NonblockingSubstitution(
-            p[2], p[5], p[1], p[4], lineno=p.lineno(2))
-        p.set_lineno(0, p.lineno(2))
+        """nonblocking_substitution : delay_control lvalue LE delays rvalue SEMICOLON
+                                    | lvalue LE delays rvalue SEMICOLON"""
+        if len(p) == 7:
+            p[0] = NonblockingSubstitution(p[2], p[5], p[1], p[4], lineno=p.lineno(2))
+            p.set_lineno(0, p.lineno(2))
+        else:
+            p[0] = NonblockingSubstitution(p[1], p[4], None, p[3], lineno=p.lineno(1))
+            p.set_lineno(0, p.lineno(1))
 
     # --------------------------------------------------------------------------
     def p_delays(self, p):
@@ -1476,6 +1485,26 @@ class VerilogParser(object):
     def p_delays_empty(self, p):
         'delays : empty'
         p[0] = None
+
+    def p_delay_control(self, p):
+        """delay_control : DELAY LPAREN expression RPAREN"""
+        p[0] = DelayStatement(p[3], lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
+
+    def p_delay_control_id(self, p):
+        """delay_control : DELAY identifier"""
+        p[0] = DelayStatement(p[2], lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
+
+    def p_delay_control_int(self, p):
+        """delay_control : DELAY intnumber"""
+        p[0] = DelayStatement(IntConst(p[2], lineno=p.lineno(1)), lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
+
+    def p_delay_control_float(self, p):
+        """delay_control : DELAY floatnumber"""
+        p[0] = DelayStatement(FloatConst(p[2], lineno=p.lineno(1)), lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
 
     # --------------------------------------------------------------------------
     def p_block(self, p):
@@ -2231,21 +2260,25 @@ class VerilogParser(object):
         p[0] = SingleStatement(p[1], lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
-    # fix me: to support task-call-statement
-    # def p_single_statement_taskcall(self, p):
-    #    'single_statement : functioncall SEMICOLON'
-    #    p[0] = SingleStatement(p[1], lineno=p.lineno(1))
-    #    p.set_lineno(0, p.lineno(1))
+    def p_single_statement_taskcall(self, p):
+        'single_statement : taskcall SEMICOLON'
+        p[0] = SingleStatement(p[1], lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
 
-    # def p_single_statement_taskcall_empty(self, p):
-    #    'single_statement : taskcall SEMICOLON'
-    #    p[0] = SingleStatement(p[1], lineno=p.lineno(1))
-    #    p.set_lineno(0, p.lineno(1))
+    def p_taskcall(self, p):
+        """taskcall : lvalue LPAREN func_args RPAREN
+                    | lvalue"""
+        # p[1] is an Lvalue node, we need its underlying variable/identifier
+        if len(p) == 5:
+            p[0] = TaskCall(p[1].var, p[3], lineno=p.lineno(1))
+        else:
+            p[0] = TaskCall(p[1].var, (), lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
 
-    # def p_taskcall_empty(self, p):
-    #    'taskcall : identifier'
-    #    p[0] = FunctionCall(p[1], (), lineno=p.lineno(1))
-    #    p.set_lineno(0, p.lineno(1))
+    def p_taskcall_noargs(self, p):
+        'taskcall : identifier'
+        p[0] = TaskCall(p[1], (), lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
 
     # --------------------------------------------------------------------------
     def p_empty(self, p):
