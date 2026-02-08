@@ -1,5 +1,5 @@
 
-function {{ automatic }}{{ retwidth }} {{ name }};
+function {{ automatic }}{{ signed }}{{ retwidth }} {{ name }};
 {%- for s in statement %}
 {{ s }}
 {%- endfor %}

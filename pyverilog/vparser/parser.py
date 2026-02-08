@@ -2079,23 +2079,43 @@ class VerilogParser(object):
     # --------------------------------------------------------------------------
     def p_function(self, p):
         """function : FUNCTION width ID SEMICOLON function_statement ENDFUNCTION
-                    | FUNCTION AUTOMATIC width ID SEMICOLON function_statement ENDFUNCTION"""
+                    | FUNCTION AUTOMATIC width ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION SIGNED width ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION AUTOMATIC SIGNED width ID SEMICOLON function_statement ENDFUNCTION"""
+        # Case 1: function [width] name
         if len(p) == 7:
-            p[0] = Function(p[3], p[2], p[5], automatic=False, lineno=p.lineno(1))
+            p[0] = Function(p[3], p[2], p[5], automatic=False, signed=False, lineno=p.lineno(1))
+        # Case 2/3: function automatic [width] name OR function signed [width] name
+        elif len(p) == 8:
+            if p[2] == 'automatic':
+                p[0] = Function(p[4], p[3], p[6], automatic=True, signed=False, lineno=p.lineno(1))
+            else: # p[2] == 'signed'
+                p[0] = Function(p[4], p[3], p[6], automatic=False, signed=True, lineno=p.lineno(1))
+        # Case 4: function automatic signed [width] name
         else:
-            p[0] = Function(p[4], p[3], p[6], automatic=True, lineno=p.lineno(1))
+            p[0] = Function(p[5], p[4], p[7], automatic=True, signed=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_function_nowidth(self, p):
         """function : FUNCTION ID SEMICOLON function_statement ENDFUNCTION
-                    | FUNCTION AUTOMATIC ID SEMICOLON function_statement ENDFUNCTION"""
+                    | FUNCTION AUTOMATIC ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION SIGNED ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION AUTOMATIC SIGNED ID SEMICOLON function_statement ENDFUNCTION"""
         width = Width(IntConst('0', lineno=p.lineno(1)),
                       IntConst('0', lineno=p.lineno(1)),
                       lineno=p.lineno(1))
+        # Case 1: function name
         if len(p) == 6:
-            p[0] = Function(p[2], width, p[4], automatic=False, lineno=p.lineno(1))
+            p[0] = Function(p[2], width, p[4], automatic=False, signed=False, lineno=p.lineno(1))
+        # Case 2/3: function automatic name OR function signed name
+        elif len(p) == 7:
+            if p[2] == 'automatic':
+                p[0] = Function(p[3], width, p[5], automatic=True, signed=False, lineno=p.lineno(1))
+            else: # p[2] == 'signed'
+                p[0] = Function(p[3], width, p[5], automatic=False, signed=True, lineno=p.lineno(1))
+        # Case 4: function automatic signed name
         else:
-            p[0] = Function(p[3], width, p[5], automatic=True, lineno=p.lineno(1))
+            p[0] = Function(p[4], width, p[6], automatic=True, signed=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_function_integer(self, p):

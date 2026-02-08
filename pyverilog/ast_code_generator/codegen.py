@@ -918,6 +918,7 @@ class ASTCodeGenerator(ConvertVisitor):
             'retwidth': self.visit(node.retwidth),
             'statement': statement,
             'automatic': 'automatic ' if node.automatic else '',
+            'signed': 'signed ' if node.signed else '',
         }
         rslt = template.render(template_dict)
         return rslt

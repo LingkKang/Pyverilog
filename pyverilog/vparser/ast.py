@@ -1069,14 +1069,15 @@ class PortArg(Node):
 
 
 class Function(Node):
-    attr_names = ('name', 'automatic',)
+    attr_names = ('name', 'automatic', 'signed',)
 
-    def __init__(self, name, retwidth, statement, automatic=False, lineno=0):
+    def __init__(self, name, retwidth, statement, automatic=False, signed=False, lineno=0):
         self.lineno = lineno
         self.name = name
         self.retwidth = retwidth
         self.statement = statement
         self.automatic = automatic
+        self.signed = signed
 
     def children(self):
         nodelist = []
