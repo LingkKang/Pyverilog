@@ -405,10 +405,10 @@ class VerilogParser(object):
             raise ParseError("Syntax Error")
         if 'inout' in sigtypes and 'input' in sigtypes:
             raise ParseError("Syntax Error")
-        if 'input' in sigtypes and 'reg' in sigtypes:
-            raise ParseError("Syntax Error")
-        if 'inout' in sigtypes and 'reg' in sigtypes:
-            raise ParseError("Syntax Error")
+        # if 'input' in sigtypes and 'reg' in sigtypes:
+        #     raise ParseError("Syntax Error")
+        # if 'inout' in sigtypes and 'reg' in sigtypes:
+        #     raise ParseError("Syntax Error")
         if 'input' in sigtypes and 'tri' in sigtypes:
             raise ParseError("Syntax Error")
         if 'output' in sigtypes and 'tri' in sigtypes:
@@ -559,10 +559,10 @@ class VerilogParser(object):
             raise ParseError("Syntax Error")
         if 'inout' in sigtypes and 'input' in sigtypes:
             raise ParseError("Syntax Error")
-        if 'input' in sigtypes and 'reg' in sigtypes:
-            raise ParseError("Syntax Error")
-        if 'inout' in sigtypes and 'reg' in sigtypes:
-            raise ParseError("Syntax Error")
+        # if 'input' in sigtypes and 'reg' in sigtypes:
+        #     raise ParseError("Syntax Error")
+        # if 'inout' in sigtypes and 'reg' in sigtypes:
+        #     raise ParseError("Syntax Error")
         if 'input' in sigtypes and 'tri' in sigtypes:
             raise ParseError("Syntax Error")
         if 'output' in sigtypes and 'tri' in sigtypes:
