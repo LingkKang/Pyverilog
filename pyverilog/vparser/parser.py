@@ -2078,26 +2078,36 @@ class VerilogParser(object):
 
     # --------------------------------------------------------------------------
     def p_function(self, p):
-        'function : FUNCTION width ID SEMICOLON function_statement ENDFUNCTION'
-        p[0] = Function(p[3], p[2], p[5], lineno=p.lineno(1))
+        """function : FUNCTION width ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION AUTOMATIC width ID SEMICOLON function_statement ENDFUNCTION"""
+        if len(p) == 7:
+            p[0] = Function(p[3], p[2], p[5], automatic=False, lineno=p.lineno(1))
+        else:
+            p[0] = Function(p[4], p[3], p[6], automatic=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_function_nowidth(self, p):
-        'function : FUNCTION ID SEMICOLON function_statement ENDFUNCTION'
-        p[0] = Function(p[2],
-                        Width(IntConst('0', lineno=p.lineno(1)),
-                              IntConst('0', lineno=p.lineno(1)),
-                              lineno=p.lineno(1)),
-                        p[4], lineno=p.lineno(1))
+        """function : FUNCTION ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION AUTOMATIC ID SEMICOLON function_statement ENDFUNCTION"""
+        width = Width(IntConst('0', lineno=p.lineno(1)),
+                      IntConst('0', lineno=p.lineno(1)),
+                      lineno=p.lineno(1))
+        if len(p) == 6:
+            p[0] = Function(p[2], width, p[4], automatic=False, lineno=p.lineno(1))
+        else:
+            p[0] = Function(p[3], width, p[5], automatic=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_function_integer(self, p):
-        'function : FUNCTION INTEGER ID SEMICOLON function_statement ENDFUNCTION'
-        p[0] = Function(p[3],
-                        Width(IntConst('31', lineno=p.lineno(1)),
-                              IntConst('0', lineno=p.lineno(1)),
-                              lineno=p.lineno(1)),
-                        p[5], lineno=p.lineno(1))
+        """function : FUNCTION INTEGER ID SEMICOLON function_statement ENDFUNCTION
+                    | FUNCTION AUTOMATIC INTEGER ID SEMICOLON function_statement ENDFUNCTION"""
+        width = Width(IntConst('31', lineno=p.lineno(1)),
+                      IntConst('0', lineno=p.lineno(1)),
+                      lineno=p.lineno(1))
+        if len(p) == 7:
+            p[0] = Function(p[3], width, p[5], automatic=False, lineno=p.lineno(1))
+        else:
+            p[0] = Function(p[4], width, p[6], automatic=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_function_statement(self, p):
