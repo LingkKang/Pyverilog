@@ -81,11 +81,13 @@ class VerilogPreprocessor(object):
         self.iv.append('-o')
         self.iv.append(outputfile)
 
-    def preprocess(self):
+    def preprocess(self, clean=True):
         cmd = self.iv + list(self.filelist)
         subprocess.call(cmd)
 
         # Removing the temporary files that were created
+        if not clean:
+            return
         for temp_file_path in self.temp_files_paths:
             os.remove(temp_file_path)
 

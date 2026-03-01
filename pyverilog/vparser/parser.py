@@ -19,6 +19,7 @@ from __future__ import print_function
 import sys
 import os
 import pathlib
+from time import time
 from ply.yacc import yacc
 
 from pyverilog.vparser.preprocessor import VerilogPreprocessor
@@ -2365,14 +2366,15 @@ class VerilogCodeParser(object):
                                                 preprocess_define)
         self.parser = VerilogParser(outputdir=outputdir, debug=debug)
 
-    def preprocess(self):
-        self.preprocessor.preprocess()
+    def preprocess(self, clean=True):
+        self.preprocessor.preprocess(clean=clean)
         text = open(self.preprocess_output).read()
-        os.remove(self.preprocess_output)
+        if clean:
+            os.remove(self.preprocess_output)
         return text
 
-    def parse(self, preprocess_output='preprocess.output', debug=0):
-        text = self.preprocess()
+    def parse(self, debug=0, clean=True):
+        text = self.preprocess(clean=clean)
         ast = self.parser.parse(text, debug=debug)
         self.directives = self.parser.get_directives()
         return ast
@@ -2386,15 +2388,23 @@ def parse(
     preprocess_include=None,
     preprocess_define=None,
     outputdir=".",
-    debug=True
+    debug=True,
+    run_id=None,
+    clean=True
 ):
+    if run_id is None:
+        run_id = str(time())
+
+    preprocess_output = os.path.join(outputdir, f"preprocess_{run_id}.output")
+
     codeparser = VerilogCodeParser(
         filelist,
+        preprocess_output=preprocess_output,
         preprocess_include=preprocess_include,
         preprocess_define=preprocess_define,
         outputdir=outputdir,
         debug=debug
     )
-    ast = codeparser.parse()
+    ast = codeparser.parse(clean=clean)
     directives = codeparser.get_directives()
     return ast, directives
