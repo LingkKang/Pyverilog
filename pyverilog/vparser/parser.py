@@ -2368,7 +2368,8 @@ class VerilogCodeParser(object):
 
     def preprocess(self, clean=True):
         self.preprocessor.preprocess(clean=clean)
-        text = open(self.preprocess_output).read()
+        with open(self.preprocess_output) as f:
+            text = f.read()
         if clean:
             os.remove(self.preprocess_output)
         return text
