@@ -345,10 +345,13 @@ class ASTCodeGenerator(ConvertVisitor):
 
         # Add logic to visit the value/initialization if it exists
         value = self.visit(node.value) if node.value is not None else ''
+        # Add logic to visit the array dimensions if they exist
+        dimensions = self.visit(node.dimensions) if node.dimensions is not None else ''
 
         template_dict = {
             'name': escape(node.name),
             'signed': node.signed,
+            'dimensions': dimensions,
             'value': value, # Pass the rendered value to the template
         }
 

@@ -1,1 +1,1 @@
-integer {{ name }}{% if value %} = {{ value }}{% endif %};
+integer {{ name }} {{ dimensions }}{% if value %} = {{ value }}{% endif %};
