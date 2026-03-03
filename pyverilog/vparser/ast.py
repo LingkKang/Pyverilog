@@ -1308,3 +1308,20 @@ class IndexedPartselect(Node):
         if self.base: nodelist.append(self.base)
         if self.width: nodelist.append(self.width)
         return tuple(nodelist)
+
+
+class RepeatStatement(Node):
+    attr_names = ()
+
+    def __init__(self, cond, statement, lineno=0):
+        self.lineno = lineno
+        self.cond = cond
+        self.statement = statement
+
+    def children(self):
+        nodelist = []
+        if self.cond:
+            nodelist.append(self.cond)
+        if self.statement:
+            nodelist.append(self.statement)
+        return tuple(nodelist)

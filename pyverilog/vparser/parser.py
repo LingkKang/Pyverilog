@@ -1425,6 +1425,7 @@ class VerilogParser(object):
         | blocking_substitution
         | nonblocking_substitution
         | single_statement
+        | repeat_statement
         """
         p[0] = p[1]
         p.set_lineno(0, p.lineno(1))
@@ -2302,6 +2303,16 @@ class VerilogParser(object):
     def p_single_statement_taskcall(self, p):
         'single_statement : taskcall SEMICOLON'
         p[0] = SingleStatement(p[1], lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
+
+    def p_repeat_statement(self, p):
+        'repeat_statement : REPEAT LPAREN cond RPAREN repeatcontent_statement'
+        p[0] = RepeatStatement(p[3], p[5], lineno=p.lineno(1))
+        p.set_lineno(0, p.lineno(1))
+
+    def p_repeatcontent_statement(self, p):
+        'repeatcontent_statement : basic_statement'
+        p[0] = p[1]
         p.set_lineno(0, p.lineno(1))
 
     def p_taskcall(self, p):

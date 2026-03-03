@@ -1067,3 +1067,13 @@ class ASTCodeGenerator(ConvertVisitor):
         base = del_space(del_paren(self.visit(node.base)))
         width = del_space(del_paren(self.visit(node.width)))
         return "%s[%s %s %s]" % (var, base, node.type, width)
+
+    def visit_RepeatStatement(self, node):
+        filename = getfilename(node)
+        template = self.get_template(filename)
+        template_dict = {
+            'cond': '' if node.cond is None else del_paren(self.visit(node.cond)),
+            'statement': '' if node.statement is None else self.visit(node.statement),
+        }
+        rslt = template.render(template_dict)
+        return rslt

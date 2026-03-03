@@ -58,6 +58,7 @@ class VerilogLexer(object):
         'ASSIGN', 'ALWAYS', 'ALWAYS_FF', 'ALWAYS_COMB', 'ALWAYS_LATCH', 'SENS_OR', 'POSEDGE', 'NEGEDGE', 'INITIAL',
         'IF', 'ELSE', 'FOR', 'WHILE', 'CASE', 'CASEX', 'CASEZ', 'UNIQUE', 'ENDCASE', 'DEFAULT',
         'WAIT', 'FOREVER', 'DISABLE', 'FORK', 'JOIN',
+        'REPEAT',
     )
 
     reserved = {}
