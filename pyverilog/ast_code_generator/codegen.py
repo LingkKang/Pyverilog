@@ -379,12 +379,17 @@ class ASTCodeGenerator(ConvertVisitor):
     def visit_Ioport(self, node):
         filename = getfilename(node)
         template = self.get_template(filename)
+        
+        # Check if the port contains an Integer type
+        is_integer = (node.second is not None and isinstance(node.second, Integer))
+        
         template_dict = {
             'first': node.first.__class__.__name__.lower(),
             'second': '' if node.second is None else node.second.__class__.__name__.lower(),
             'name': escape(node.first.name),
-            'width': '' if node.first.width is None else self.visit(node.first.width),
-            'signed': node.first.signed or (node.second is not None and node.second.signed),
+            # Suppress implicit width & signedness formatting for integer ports
+            'width': '' if (node.first.width is None or is_integer) else self.visit(node.first.width),
+            'signed': (node.first.signed or (node.second is not None and node.second.signed)) and not is_integer,
             'dimensions': '' if node.first.dimensions is None else self.visit(node.first.dimensions)
         }
         rslt = template.render(template_dict)
