@@ -424,8 +424,17 @@ class ASTCodeGenerator(ConvertVisitor):
     def visit_Decl(self, node):
         filename = getfilename(node)
         template = self.get_template(filename)
+        
+        items = []
+        for item in node.list:
+            rslt = self.visit(item)
+            # Ensure Ioport nodes get a semicolon when rendered as a declaration statement
+            if isinstance(item, Ioport) and not rslt.strip().endswith(';'):
+                rslt = rslt.strip() + ';\n'
+            items.append(rslt)
+            
         template_dict = {
-            'items': [self.visit(item) for item in node.list],
+            'items': items,
         }
         rslt = template.render(template_dict)
         return rslt

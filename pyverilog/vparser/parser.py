@@ -529,6 +529,15 @@ class VerilogParser(object):
     def create_decl(self, sigtypes, name, width=None, dimensions=None, lineno=0):
         self.typecheck_decl(sigtypes, dimensions)
         decls = []
+
+        # Check if this is a combined declaration (e.g., "input integer")
+        has_direction = any(t in sigtypes for t in ('input', 'output', 'inout'))
+        has_type = any(t in sigtypes for t in ('wire', 'reg', 'tri', 'integer', 'logic'))
+
+        if has_direction and has_type:
+            # Return a single combined Ioport node instead of two separate nodes
+            return [self.create_ioport(sigtypes, name, width, dimensions, lineno)]
+
         signed = False
         if 'signed' in sigtypes or 'integer' in sigtypes:
             signed = True
@@ -1639,9 +1648,8 @@ class VerilogParser(object):
         """
         if isinstance(p[1], Decl):
             for r in p[1].list:
-                if (not isinstance(r, Reg) and not isinstance(r, Wire) and
-                    not isinstance(r, Integer) and not isinstance(r, Real) and
-                        not isinstance(r, Parameter) and not isinstance(r, Localparam)):
+                if (not isinstance(r, (Input, Output, Inout, Reg, Wire, 
+                                    Integer, Real, Parameter, Localparam, Ioport))):
                     raise ParseError("Syntax Error")
         p[0] = p[1]
         p.set_lineno(0, p.lineno(1))
@@ -2197,13 +2205,12 @@ class VerilogParser(object):
     def p_function_integer(self, p):
         """function : FUNCTION INTEGER ID SEMICOLON function_statement ENDFUNCTION
                     | FUNCTION AUTOMATIC INTEGER ID SEMICOLON function_statement ENDFUNCTION"""
-        width = Width(IntConst('31', lineno=p.lineno(1)),
-                      IntConst('0', lineno=p.lineno(1)),
-                      lineno=p.lineno(1))
+        # Use an Identifier instead of a Width node to preserve the "integer" keyword
+        retwidth = Identifier('integer', lineno=p.lineno(2))
         if len(p) == 7:
-            p[0] = Function(p[3], width, p[5], automatic=False, lineno=p.lineno(1))
+            p[0] = Function(p[3], retwidth, p[5], automatic=False, lineno=p.lineno(1))
         else:
-            p[0] = Function(p[4], width, p[6], automatic=True, lineno=p.lineno(1))
+            p[0] = Function(p[4], retwidth, p[6], automatic=True, lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
     def p_function_statement_decls_calc(self, p):
@@ -2238,8 +2245,8 @@ class VerilogParser(object):
         """
         if isinstance(p[1], Decl):
             for r in p[1].list:
-                if (not isinstance(r, Input) and not isinstance(r, Reg) and
-                        not isinstance(r, Integer)):
+                if (not isinstance(r, (Input, Output, Inout, Reg, Wire, 
+                               Integer, Real, Parameter, Localparam, Ioport))):
                     raise ParseError("Syntax Error")
         p[0] = p[1]
         p.set_lineno(0, p.lineno(1))
@@ -2321,8 +2328,8 @@ class VerilogParser(object):
         """
         if isinstance(p[1], Decl):
             for r in p[1].list:
-                if (not isinstance(r, Input) and not isinstance(r, Reg) and
-                        not isinstance(r, Integer)):
+                if (not isinstance(r, (Input, Output, Inout, Reg, Wire, 
+                               Integer, Real, Parameter, Localparam, Ioport))):
                     raise ParseError("Syntax Error")
         p[0] = p[1]
         p.set_lineno(0, p.lineno(1))
