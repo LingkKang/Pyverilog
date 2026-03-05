@@ -345,14 +345,16 @@ class Ioport(Node):
 
 
 class Parameter(Node):
-    attr_names = ('name', 'signed')
+    # Add 'datatype' to attr_names so it's considered in equality/show methods
+    attr_names = ('name', 'signed', 'datatype')
 
-    def __init__(self, name, value, width=None, signed=False, lineno=0):
+    def __init__(self, name, value, width=None, signed=False, datatype=None, lineno=0):
         self.lineno = lineno
         self.name = name
         self.value = value
         self.width = width
         self.signed = signed
+        self.datatype = datatype  # Store the type keyword (e.g., 'integer')
         self.dimensions = None
 
     def children(self):

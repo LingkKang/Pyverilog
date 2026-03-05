@@ -404,6 +404,7 @@ class ASTCodeGenerator(ConvertVisitor):
             'width': '' if node.width is None or (value.startswith('"') and value.endswith('"')) else self.visit(node.width),
             'value': value,
             'signed': node.signed,
+            'datatype': node.datatype, # Add this line
         }
         rslt = template.render(template_dict)
         return rslt
@@ -417,6 +418,7 @@ class ASTCodeGenerator(ConvertVisitor):
             'width': '' if node.width is None or (value.startswith('"') and value.endswith('"')) else self.visit(node.width),
             'value': value,
             'signed': node.signed,
+            'datatype': node.datatype, # Add this line
         }
         rslt = template.render(template_dict)
         return rslt

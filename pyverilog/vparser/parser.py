@@ -200,8 +200,8 @@ class VerilogParser(object):
 
     def p_param_integer(self, p):
         'param : PARAMETER INTEGER param_substitution_list COMMA'
-        paramlist = [Parameter(rname, rvalue, lineno=p.lineno(3))
-                     for rname, rvalue in p[3]]
+        paramlist = [Parameter(rname, rvalue, datatype='integer', lineno=p.lineno(3))
+                    for rname, rvalue in p[3]]
         p[0] = Decl(tuple(paramlist), lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
@@ -235,8 +235,8 @@ class VerilogParser(object):
 
     def p_param_end_integer(self, p):
         'param_end : PARAMETER INTEGER param_substitution_list'
-        paramlist = [Parameter(rname, rvalue, lineno=p.lineno(3))
-                     for rname, rvalue in p[3]]
+        paramlist = [Parameter(rname, rvalue, datatype='integer', lineno=p.lineno(3))
+                    for rname, rvalue in p[3]]
         p[0] = Decl(tuple(paramlist), lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
@@ -865,8 +865,8 @@ class VerilogParser(object):
 
     def p_parameterdecl_integer(self, p):
         'parameterdecl : PARAMETER INTEGER param_substitution_list SEMICOLON'
-        paramlist = [Parameter(rname, rvalue, lineno=p.lineno(3))
-                     for rname, rvalue in p[3]]
+        paramlist = [Parameter(rname, rvalue, datatype='integer', lineno=p.lineno(3))
+                    for rname, rvalue in p[3]]
         p[0] = Decl(tuple(paramlist), lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
@@ -900,8 +900,8 @@ class VerilogParser(object):
 
     def p_localparamdecl_integer(self, p):
         'localparamdecl : LOCALPARAM INTEGER param_substitution_list SEMICOLON'
-        paramlist = [Localparam(rname, rvalue, lineno=p.lineno(3))
-                     for rname, rvalue in p[3]]
+        paramlist = [Localparam(rname, rvalue, datatype='integer', lineno=p.lineno(3))
+                    for rname, rvalue in p[3]]
         p[0] = Decl(tuple(paramlist), lineno=p.lineno(1))
         p.set_lineno(0, p.lineno(1))
 
