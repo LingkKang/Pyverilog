@@ -913,17 +913,19 @@ class Case(Node):
 class Block(Node):
     attr_names = ('scope',)
 
-    def __init__(self, statements, scope=None, lineno=0):
+    def __init__(self, statements, scope=None, delay=None, lineno=0):
         self.lineno = lineno
         self.statements = statements
         self.scope = scope
+        self.delay = delay # Store delay
 
     def children(self):
         nodelist = []
         if self.statements:
             nodelist.extend(self.statements)
+        if self.delay: # Add delay to children
+            nodelist.append(self.delay)
         return tuple(nodelist)
-
 
 class Initial(Node):
     attr_names = ()
@@ -1255,15 +1257,18 @@ class Disable(Node):
 class ParallelBlock(Node):
     attr_names = ('scope',)
 
-    def __init__(self, statements, scope=None, lineno=0):
+    def __init__(self, statements, scope=None, delay=None, lineno=0):
         self.lineno = lineno
         self.statements = statements
         self.scope = scope
+        self.delay = delay # Store delay
 
     def children(self):
         nodelist = []
         if self.statements:
             nodelist.extend(self.statements)
+        if self.delay: # Add delay to children
+            nodelist.append(self.delay)
         return tuple(nodelist)
 
 

@@ -1593,14 +1593,14 @@ class VerilogParser(object):
 
     # --------------------------------------------------------------------------
     def p_block(self, p):
-        'block : BEGIN block_statements END'
-        p[0] = Block(p[2], lineno=p.lineno(1))
-        p.set_lineno(0, p.lineno(1))
+        'block : delays BEGIN block_statements END' # Add delays
+        p[0] = Block(p[3], delay=p[1], lineno=p.lineno(2))
+        p.set_lineno(0, p.lineno(2))
 
     def p_block_empty(self, p):
-        'block : BEGIN END'
-        p[0] = Block((), lineno=p.lineno(1))
-        p.set_lineno(0, p.lineno(1))
+        'block : delays BEGIN END' # Add delays
+        p[0] = Block((), delay=p[1], lineno=p.lineno(2))
+        p.set_lineno(0, p.lineno(2))
 
     def p_block_statements(self, p):
         'block_statements : block_statements block_statement'
@@ -1619,14 +1619,14 @@ class VerilogParser(object):
 
     # --------------------------------------------------------------------------
     def p_namedblock(self, p):
-        'namedblock : BEGIN COLON ID namedblock_statements END'
-        p[0] = Block(p[4], p[3], lineno=p.lineno(1))
-        p.set_lineno(0, p.lineno(1))
+        'namedblock : delays BEGIN COLON ID namedblock_statements END' # Add delays
+        p[0] = Block(p[5], p[4], delay=p[1], lineno=p.lineno(2))
+        p.set_lineno(0, p.lineno(2))
 
     def p_namedblock_empty(self, p):
-        'namedblock : BEGIN COLON ID END'
-        p[0] = Block((), p[3], lineno=p.lineno(1))
-        p.set_lineno(0, p.lineno(1))
+        'namedblock : delays BEGIN COLON ID END' # Add delays
+        p[0] = Block((), p[4], delay=p[1], lineno=p.lineno(2))
+        p.set_lineno(0, p.lineno(2))
 
     def p_namedblock_statements(self, p):
         'namedblock_statements : namedblock_statements namedblock_statement'
@@ -1656,14 +1656,14 @@ class VerilogParser(object):
 
     # --------------------------------------------------------------------------
     def p_parallelblock(self, p):
-        'parallelblock : FORK block_statements JOIN'
-        p[0] = ParallelBlock(p[2], lineno=p.lineno(1))
-        p.set_lineno(0, p.lineno(1))
+        'parallelblock : delays FORK block_statements JOIN' # Add delays
+        p[0] = ParallelBlock(p[3], delay=p[1], lineno=p.lineno(2))
+        p.set_lineno(0, p.lineno(2))
 
     def p_parallelblock_empty(self, p):
-        'parallelblock : FORK JOIN'
-        p[0] = ParallelBlock((), lineno=p.lineno(1))
-        p.set_lineno(0, p.lineno(1))
+        'parallelblock : delays FORK JOIN' # Add delays
+        p[0] = ParallelBlock((), delay=p[1], lineno=p.lineno(2))
+        p.set_lineno(0, p.lineno(2))
 
     # --------------------------------------------------------------------------
     def p_if_statement(self, p):

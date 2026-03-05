@@ -834,6 +834,7 @@ class ASTCodeGenerator(ConvertVisitor):
         template_dict = {
             'scope': '' if node.scope is None else escape(node.scope),
             'statements': [self.indent(self.visit(statement)) for statement in node.statements],
+            'delay': '' if node.delay is None else self.visit(node.delay), # Visit delay node
         }
         rslt = template.render(template_dict)
         return rslt
@@ -1061,6 +1062,7 @@ class ASTCodeGenerator(ConvertVisitor):
         template_dict = {
             'scope': '' if node.scope is None else escape(node.scope),
             'statements': [self.indent(self.visit(statement)) for statement in node.statements],
+            'delay': '' if node.delay is None else self.visit(node.delay), # Visit delay node
         }
         rslt = template.render(template_dict)
         return rslt
